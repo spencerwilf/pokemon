@@ -68,7 +68,7 @@ export const editPokemonAction = (pokemon) => async dispatch => {
 
 export const getPokemonDetailAction = (id) => async dispatch => {
   const response = await fetch(`/api/pokemon/${id}`);
-
+  
   if (response.ok) {
     const pokemon = await response.json();
     dispatch(addOnePokemon(pokemon));

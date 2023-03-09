@@ -7,10 +7,11 @@ const PokemonItems = ({ pokemon, setEditItemId }) => {
     if (!pokemon.items) return null;
     return pokemon.items.map((itemId) => state.items[itemId]);
   });
-
+  // console.log("pokemon", pokemon)
+  // console.log('alskjdfl;kjasd;lkfja', items)
   useEffect(() => {
     dispatch(getPokemonItems(pokemon.id));
-  }, [pokemon.id]);
+  }, [dispatch, pokemon.id]);
 
   if (!items) {
     return null;

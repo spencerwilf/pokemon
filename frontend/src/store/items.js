@@ -6,32 +6,46 @@ export const ADD_ITEM = "items/ADD_ITEM";
 const load = (items, pokemonId) => ({
   type: LOAD_ITEMS,
   items,
-  pokemonId
+  pokemonId,
 });
 
 const update = (item) => ({
   type: UPDATE_ITEM,
-  item
+  item,
 });
 
 const add = (item) => ({
   type: ADD_ITEM,
-  item
+  item,
 });
 
 const remove = (itemId, pokemonId) => ({
   type: REMOVE_ITEM,
   itemId,
-  pokemonId
+  pokemonId,
 });
 
-
-export const getPokemonItems = (id) => async dispatch => {
+export const getPokemonItems =  (id) => async (dispatch) => {
   const response = await fetch(`/api/pokemon/${id}/items`);
 
   if (response.ok) {
     const pokemonItems = await response.json();
-    dispatch(load(pokemonItems));
+    
+    dispatch(load(pokemonItems, id));
+  }
+};
+
+export const editPokemonItem = (updatedItem) => async dispatch => {
+  const response = await fetch(`/api/items/${updatedItem.id}`, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(updatedItem)
+  });
+
+  if (response.ok) {
+    const editedItem = await response.json();
+    dispatch(update(editedItem));
+    return editedItem
   }
 };
 
@@ -42,24 +56,24 @@ const initialState = {};
 
 const itemsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOAD_ITEMS: 
+    case LOAD_ITEMS:
       const newItems = {};
-      action.items.forEach(item => {
+      action.items.forEach((item) => {
         newItems[item.id] = item;
-      })
+      });
       return {
         ...state,
-        ...newItems
-      }
-    case REMOVE_ITEM: 
+        ...newItems,
+      };
+    case REMOVE_ITEM:
       const newState = { ...state };
       delete newState[action.itemId];
       return newState;
     case ADD_ITEM:
-    case UPDATE_ITEM: 
+    case UPDATE_ITEM:
       return {
         ...state,
-        [action.item.id]: action.item
+        [action.item.id]: action.item,
       };
     default:
       return state;
